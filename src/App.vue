@@ -1,6 +1,11 @@
 <template>
   <div id="app">
-    <Container v-for="(contents, index) in currentOrder" :key="index" :contents="contents" />
+    <Container
+      v-for="(contents, index) in currentOrder"
+      :key="index"
+      :contents="contents"
+      :onClick="() => selectContainer(index)"
+    />
   </div>
 </template>
 
@@ -13,6 +18,18 @@ export default {
     return {
       colours: ['red', 'blue', 'green'],
       currentOrder: [],
+      selected: null,
+    }
+  },
+  methods: {
+    selectContainer(index) {
+      if (this.selected === null) {
+        if (this.currentOrder[index].length) this.selected = index;
+      } else if (this.currentOrder[index].length < 4) {
+        const ballToMove = this.currentOrder[this.selected].shift();
+        this.currentOrder[index] = [ballToMove, ...this.currentOrder[index]];
+        this.selected = null;
+      }
     }
   },
   created() {

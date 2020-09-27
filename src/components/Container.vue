@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" @click="onClick">
     <Ball v-for="(colour, index) in contents" :key="index" :colour="colour" />
   </div>
 </template>
@@ -10,7 +10,8 @@ import Ball from './Ball.vue'
 export default {
   name: 'Container',
   props: {
-    contents: Array
+    contents: Array,
+    onClick: Function
   },
   components: {
     Ball
@@ -27,5 +28,9 @@ export default {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    cursor: pointer;
   }
 </style>
