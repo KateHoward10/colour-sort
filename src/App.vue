@@ -26,9 +26,11 @@ export default {
     selectContainer(index) {
       if (this.selected === null) {
         if (this.currentOrder[index].length) this.selected = index;
-      } else if (this.currentOrder[index].length < 4) {
-        const ballToMove = this.currentOrder[this.selected].shift();
-        this.currentOrder[index] = [ballToMove, ...this.currentOrder[index]];
+      } else {
+        if (this.currentOrder[index].length < 4 && index !== this.selected) {
+          const ballToMove = this.currentOrder[this.selected].shift();
+          this.currentOrder[index] = [ballToMove, ...this.currentOrder[index]];
+        }
         this.selected = null;
       }
     }
