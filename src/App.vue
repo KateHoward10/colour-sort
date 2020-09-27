@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <button @click="start">Start</button>
     <div class="wrapper">
       <Container
         v-for="(contents, index) in currentOrder"
@@ -9,7 +10,7 @@
         :isSelected="selected === index"
       />
     </div>
-    <h3 v-if="win">You win!</h3>
+    <h2 v-if="win">You win!</h2>
   </div>
 </template>
 
@@ -21,12 +22,20 @@ export default {
   data() {
     return {
       colours: ['red', 'blue', 'green'],
-      currentOrder: [],
+      currentOrder: [[],[],[],[]],
       selected: null,
       win: false
     }
   },
   methods: {
+    start() {
+      this.win = false;
+      this.selected = null;
+      let allColours = this.colours;
+      for (let i = 0; i < this.colours.length; i++) allColours = [...allColours, ...this.colours];
+      const randomised = allColours.sort(() => Math.random() - 0.5);
+      this.currentOrder = [...this.colours.map((c, i) => randomised.slice(i*4, i*4+4)), []];
+    },
     selectContainer(index) {
       if (this.selected === null) {
         if (this.currentOrder[index].length) this.selected = index;
@@ -52,12 +61,6 @@ export default {
       });
     }
   },
-  created() {
-    let allColours = this.colours;
-    for (let i = 0; i < this.colours.length; i++) allColours = [...allColours, ...this.colours];
-    const randomised = allColours.sort(() => Math.random() - 0.5);
-    this.currentOrder = [...this.colours.map((c, i) => randomised.slice(i*4, i*4+4)), []];
-  },
   components: {
     Container
   }
@@ -81,5 +84,12 @@ body {
 .wrapper {
   display: flex;
   justify-content: center;
+}
+button {
+  font-size: 18px;
+  text-transform: uppercase;
+  background-color: #fff;
+  border: none;
+  margin: 30px;
 }
 </style>
