@@ -1,12 +1,15 @@
 <template>
   <div id="app">
-    <Container
-      v-for="(contents, index) in currentOrder"
-      :key="index"
-      :contents="contents"
-      :onClick="() => selectContainer(index)"
-      :isSelected="selected === index"
-    />
+    <div class="wrapper">
+      <Container
+        v-for="(contents, index) in currentOrder"
+        :key="index"
+        :contents="contents"
+        :onClick="() => selectContainer(index)"
+        :isSelected="selected === index"
+      />
+    </div>
+    <h3 v-if="win">You win!</h3>
   </div>
 </template>
 
@@ -20,6 +23,7 @@ export default {
       colours: ['red', 'blue', 'green'],
       currentOrder: [],
       selected: null,
+      win: false
     }
   },
   methods: {
@@ -27,12 +31,25 @@ export default {
       if (this.selected === null) {
         if (this.currentOrder[index].length) this.selected = index;
       } else {
-        if (index !== this.selected && this.currentOrder[index].length < 4 && (!this.currentOrder[index].length || this.currentOrder[index][0] === this.currentOrder[this.selected][0])) {
+        if (this.canMoveBall(index)) {
           const ballToMove = this.currentOrder[this.selected].shift();
           this.currentOrder[index] = [ballToMove, ...this.currentOrder[index]];
         }
         this.selected = null;
+        if (this.hasWon()) this.win = true;
       }
+    },
+    canMoveBall(index) {
+      return index !== this.selected &&
+        this.currentOrder[index].length < 4 && (
+          !this.currentOrder[index].length ||
+          this.currentOrder[index][0] === this.currentOrder[this.selected][0]
+        );
+    },
+    hasWon() {
+      return this.currentOrder.every(contents => {
+        return !contents.length || (contents.length === 4 && contents.every(colour => colour === contents[0]));
+      });
     }
   },
   created() {
@@ -59,6 +76,9 @@ body {
   min-height: 100vh;
   text-align: center;
   padding: 60px;
+  color: #fff;
+}
+.wrapper {
   display: flex;
   justify-content: center;
 }
