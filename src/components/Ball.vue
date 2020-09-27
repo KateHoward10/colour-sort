@@ -1,5 +1,11 @@
 <template>
-  <div class="ball" :style="{ background: colour }">
+  <div
+    class="ball"
+    :style="{
+      background: colour,
+      transform: `translateY(-${yOffset}px)`
+    }"
+  >
   </div>
 </template>
 
@@ -7,7 +13,8 @@
 export default {
   name: 'Ball',
   props: {
-    colour: String
+    colour: String,
+    yOffset: Number
   }
 }
 </script>

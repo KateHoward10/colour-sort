@@ -5,6 +5,7 @@
       :key="index"
       :contents="contents"
       :onClick="() => selectContainer(index)"
+      :isSelected="selected === index"
     />
   </div>
 </template>

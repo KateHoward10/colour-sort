@@ -1,6 +1,11 @@
 <template>
   <div class="container" @click="onClick">
-    <Ball v-for="(colour, index) in contents" :key="index" :colour="colour" />
+    <Ball
+      v-for="(colour, index) in contents"
+      :key="index"
+      :colour="colour"
+      :yOffset="isSelected && index === 0 ? (5 - contents.length) * 40 : 0"
+    />
   </div>
 </template>
 
@@ -11,7 +16,8 @@ export default {
   name: 'Container',
   props: {
     contents: Array,
-    onClick: Function
+    onClick: Function,
+    isSelected: Boolean,
   },
   components: {
     Ball
