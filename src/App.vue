@@ -27,7 +27,7 @@ export default {
       if (this.selected === null) {
         if (this.currentOrder[index].length) this.selected = index;
       } else {
-        if (this.currentOrder[index].length < 4 && index !== this.selected) {
+        if (index !== this.selected && this.currentOrder[index].length < 4 && (!this.currentOrder[index].length || this.currentOrder[index][0] === this.currentOrder[this.selected][0])) {
           const ballToMove = this.currentOrder[this.selected].shift();
           this.currentOrder[index] = [ballToMove, ...this.currentOrder[index]];
         }
