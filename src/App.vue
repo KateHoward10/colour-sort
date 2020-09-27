@@ -1,5 +1,10 @@
 <template>
   <div id="app">
+    <select v-model="level">
+      <option v-for="value in [3,4,5,6]" :key="value" :value="value">
+        {{ value }} colours
+      </option>
+    </select>
     <button @click="start">Start</button>
     <div class="wrapper">
       <Container
@@ -21,8 +26,9 @@ export default {
   name: 'App',
   data() {
     return {
-      colours: ['red', 'blue', 'green'],
-      currentOrder: [[],[],[],[]],
+      level: 3,
+      colours: ['red', 'blue', 'green', 'yellow', 'violet', 'deepskyblue'],
+      currentOrder: [],
       selected: null,
       win: false
     }
@@ -31,10 +37,11 @@ export default {
     start() {
       this.win = false;
       this.selected = null;
-      let allColours = this.colours;
-      for (let i = 0; i < this.colours.length; i++) allColours = [...allColours, ...this.colours];
+      const levelColours = this.colours.slice(0, this.level);
+      let allColours = levelColours;
+      for (let i = 0; i < 3; i++) allColours = [...allColours, ...levelColours];
       const randomised = allColours.sort(() => Math.random() - 0.5);
-      this.currentOrder = [...this.colours.map((c, i) => randomised.slice(i*4, i*4+4)), []];
+      this.currentOrder = [...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)), []];
     },
     selectContainer(index) {
       if (this.selected === null) {
@@ -85,9 +92,8 @@ body {
   display: flex;
   justify-content: center;
 }
-button {
+button, select {
   font-size: 18px;
-  text-transform: uppercase;
   background-color: #fff;
   border: none;
   margin: 30px;
