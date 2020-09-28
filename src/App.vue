@@ -41,7 +41,10 @@ export default {
       let allColours = levelColours;
       for (let i = 0; i < 3; i++) allColours = [...allColours, ...levelColours];
       const randomised = allColours.sort(() => Math.random() - 0.5);
-      this.currentOrder = [...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)), []];
+      this.currentOrder = [
+        ...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)),
+        ...Array.from(Array(Math.floor(this.level / 5)+1)).fill([])
+      ];
     },
     selectContainer(index) {
       if (this.selected === null) {
@@ -90,12 +93,16 @@ body {
 }
 .wrapper {
   display: flex;
+  flex-flow: row wrap;
+  align-items: center;
   justify-content: center;
+  max-width: 500px;
+  margin: 0 auto;
 }
 button, select {
   font-size: 18px;
   background-color: #fff;
   border: none;
-  margin: 30px;
+  margin: 20px;
 }
 </style>
