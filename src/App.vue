@@ -1,11 +1,13 @@
 <template>
   <div id="app">
+    <div>Score: {{ score }}</div>
     <select v-model="level">
       <option v-for="value in [3,4,5,6]" :key="value" :value="value">
         {{ value }} colours
       </option>
     </select>
     <button @click="start">Start</button>
+    <button :disabled="win || score < 10" @click="addContainer">Add container (-10)</button>
     <div class="wrapper">
       <Container
         v-for="(contents, index) in currentOrder"
@@ -30,7 +32,8 @@ export default {
       colours: ['red', 'blue', 'green', 'yellow', 'violet', 'deepskyblue'],
       currentOrder: [],
       selected: null,
-      win: false
+      win: false,
+      score: 0
     }
   },
   methods: {
@@ -55,8 +58,15 @@ export default {
           this.currentOrder[index] = [ballToMove, ...this.currentOrder[index]];
         }
         this.selected = null;
-        if (this.hasWon()) this.win = true;
+        if (this.hasWon()) {
+          this.win = true;
+          this.score += 50;
+        }
       }
+    },
+    addContainer() {
+      this.currentOrder.push([]);
+      this.score -= 10;
     },
     canMoveBall(index) {
       return index !== this.selected &&
