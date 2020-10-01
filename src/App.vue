@@ -10,7 +10,7 @@
     <button :disabled="win || score < 10" @click="addContainer">Add container (-10)</button>
     <div class="wrapper">
       <Container
-        v-for="(contents, index) in currentOrder"
+        v-for="(contents, index) in containers"
         :key="index"
         :contents="contents"
         :onClick="() => selectContainer(index)"
@@ -30,7 +30,7 @@ export default {
     return {
       level: 3,
       colours: ['red', 'blue', 'green', 'yellow', 'violet', 'deepskyblue'],
-      currentOrder: [],
+      containers: [[],[],[],[]],
       selected: null,
       win: false,
       score: +localStorage.getItem("score") || 0
@@ -44,18 +44,21 @@ export default {
       let allColours = levelColours;
       for (let i = 0; i < 3; i++) allColours = [...allColours, ...levelColours];
       const randomised = allColours.sort(() => Math.random() - 0.5);
-      this.currentOrder = [
+      this.containers = [
         ...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)),
         ...Array.from(Array(Math.floor(this.level / 5)+1)).fill([])
       ];
     },
     selectContainer(index) {
       if (this.selected === null) {
-        if (this.currentOrder[index].length) this.selected = index;
+        // Pick up ball
+        if (this.containers[index].length) this.selected = index;
       } else {
         if (this.canMoveBall(index)) {
-          const ballToMove = this.currentOrder[this.selected].shift();
-          this.currentOrder[index] = [ballToMove, ...this.currentOrder[index]];
+          // Remove ball from its current container...
+          const ballToMove = this.containers[this.selected].shift();
+          // ...and add it to the selected one
+          this.containers[index] = [ballToMove, ...this.containers[index]];
         }
         this.selected = null;
         if (this.hasWon()) {
@@ -66,18 +69,18 @@ export default {
       }
     },
     addContainer() {
-      this.currentOrder.push([]);
+      this.containers.push([]);
       this.score -= 10;
     },
     canMoveBall(index) {
       return index !== this.selected &&
-        this.currentOrder[index].length < 4 && (
-          !this.currentOrder[index].length ||
-          this.currentOrder[index][0] === this.currentOrder[this.selected][0]
+        this.containers[index].length < 4 && (
+          !this.containers[index].length ||
+          this.containers[index][0] === this.containers[this.selected][0]
         );
     },
     hasWon() {
-      return this.currentOrder.every(contents => {
+      return this.containers.every(contents => {
         return !contents.length || (contents.length === 4 && contents.every(colour => colour === contents[0]));
       });
     }
