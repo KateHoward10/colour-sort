@@ -33,7 +33,7 @@ export default {
       currentOrder: [],
       selected: null,
       win: false,
-      score: 0
+      score: +localStorage.getItem("score") || 0
     }
   },
   methods: {
@@ -61,6 +61,7 @@ export default {
         if (this.hasWon()) {
           this.win = true;
           this.score += 50;
+          localStorage.setItem("score", this.score);
         }
       }
     },
