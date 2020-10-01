@@ -7,7 +7,7 @@
       </option>
     </select>
     <button @click="start">Start</button>
-    <button :disabled="win || score < 10" @click="addContainer">Add container (-10)</button>
+    <button :disabled="cannotAddContainer()" @click="addContainer">Add container (-10)</button>
     <div class="wrapper">
       <Container
         v-for="(contents, index) in containers"
@@ -33,7 +33,8 @@ export default {
       containers: [[],[],[],[]],
       selected: null,
       win: false,
-      score: +localStorage.getItem("score") || 0
+      score: +localStorage.getItem("score") || 0,
+      hasAddedContainer: false
     }
   },
   methods: {
@@ -71,11 +72,16 @@ export default {
     addContainer() {
       this.containers.push([]);
       this.score -= 10;
+      this.hasAddedContainer = true;
     },
     canMoveBall(index) {
+      // If it's not the same container that the ball came from...
       return index !== this.selected &&
+        // ...and it's not full...
         this.containers[index].length < 4 && (
+          // ...and it's either completely empty...
           !this.containers[index].length ||
+          // ...or the top ball colour matches the selected ball
           this.containers[index][0] === this.containers[this.selected][0]
         );
     },
@@ -83,6 +89,9 @@ export default {
       return this.containers.every(contents => {
         return !contents.length || (contents.length === 4 && contents.every(colour => colour === contents[0]));
       });
+    },
+    cannotAddContainer() {
+      return this.hasAddedContainer || this.win || !this.containers.toString().replace(/,/g,'') || this.score < 10;
     }
   },
   components: {
@@ -114,9 +123,16 @@ body {
   margin: 0 auto;
 }
 button, select {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-size: 18px;
-  background-color: #fff;
-  border: none;
+  color: #fff;
+  background-color: #111;
+  border: 2px solid #fff;
   margin: 20px;
+}
+button {
+  border-radius: 15px;
+  padding: 2px 10px;
+  cursor: pointer;
 }
 </style>
