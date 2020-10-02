@@ -7,7 +7,7 @@
       </option>
     </select>
     <button @click="start">Start</button>
-    <button @click="undo">Undo</button>
+    <button :disabled="!moves.length" @click="undo">Undo</button>
     <button :disabled="cannotAddContainer()" @click="addContainer">Add container (-10)</button>
     <div class="wrapper">
       <Container
@@ -80,14 +80,11 @@ export default {
       this.hasAddedContainer = true;
     },
     undo() {
-      if (this.moves.length) {
-        const { from, to } = this.moves[this.moves.length - 1];
-        const ballToMove = this.containers[to].shift();
-        this.containers[from] = [ballToMove, ...this.containers[from]];
-        this.selected = null;
-        this.moves.pop();
-        this.$forceUpdate();
-      }
+      const { from, to } = this.moves[this.moves.length - 1];
+      const ballToMove = this.containers[to].shift();
+      this.containers[from] = [ballToMove, ...this.containers[from]];
+      this.selected = null;
+      this.moves.pop();
     },
     canMoveBall(index) {
       // If it's not the same container that the ball came from...
