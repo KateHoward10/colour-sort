@@ -7,6 +7,7 @@
       </option>
     </select>
     <button @click="start">Start</button>
+    <button @click="undo">Undo</button>
     <button :disabled="cannotAddContainer()" @click="addContainer">Add container (-10)</button>
     <div class="wrapper">
       <Container
@@ -34,13 +35,16 @@ export default {
       selected: null,
       win: false,
       score: +localStorage.getItem("score") || 0,
-      hasAddedContainer: false
+      hasAddedContainer: false,
+      moves: []
     }
   },
   methods: {
     start() {
       this.win = false;
       this.selected = null;
+      this.hasAddedContainer = false;
+      this.moves = [];
       const levelColours = this.colours.slice(0, this.level);
       let allColours = levelColours;
       for (let i = 0; i < 3; i++) allColours = [...allColours, ...levelColours];
@@ -60,6 +64,7 @@ export default {
           const ballToMove = this.containers[this.selected].shift();
           // ...and add it to the selected one
           this.containers[index] = [ballToMove, ...this.containers[index]];
+          this.moves.push({ from: this.selected, to: index });
         }
         this.selected = null;
         if (this.hasWon()) {
@@ -73,6 +78,16 @@ export default {
       this.containers.push([]);
       this.score -= 10;
       this.hasAddedContainer = true;
+    },
+    undo() {
+      if (this.moves.length) {
+        const { from, to } = this.moves[this.moves.length - 1];
+        const ballToMove = this.containers[to].shift();
+        this.containers[from] = [ballToMove, ...this.containers[from]];
+        this.selected = null;
+        this.moves.pop();
+        this.$forceUpdate();
+      }
     },
     canMoveBall(index) {
       // If it's not the same container that the ball came from...
