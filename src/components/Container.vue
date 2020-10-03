@@ -24,19 +24,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .container {
-    width: 40px;
-    height: 160px;
-    border: 2px solid #fff;
-    border-top: 0;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    margin: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    cursor: pointer;
-  }
-</style>

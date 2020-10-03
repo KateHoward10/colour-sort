@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <div>Number of moves: {{ totalMoves }}</div>
+    <div>Total moves: {{ totalMoves }}</div>
     <select v-model="level">
       <option v-for="value in [3,4,5,6,7,8,9,10]" :key="value" :value="value">
         {{ value }} colours
       </option>
     </select>
-    <button @click="start">Start</button>
+    <button @click="start" class="start-button">Start</button>
     <button :disabled="!moves.length" @click="undo">Undo</button>
     <button :disabled="cannotAddContainer()" @click="addContainer">Add container</button>
     <div class="wrapper">
@@ -109,40 +109,3 @@ export default {
   }
 }
 </script>
-
-<style>
-body {
-  margin: 0;
-}
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #111;
-  min-height: 100vh;
-  text-align: center;
-  padding: 60px;
-  color: #fff;
-}
-.wrapper {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: center;
-  max-width: 700px;
-  margin: 0 auto;
-}
-button, select {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  font-size: 18px;
-  color: #fff;
-  background-color: #111;
-  border: 2px solid #fff;
-  margin: 20px;
-}
-button {
-  border-radius: 15px;
-  padding: 2px 10px;
-  cursor: pointer;
-}
-</style>
