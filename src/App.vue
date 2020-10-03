@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <div>Total moves: {{ totalMoves }}</div>
+    <h2>{{ win ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</h2>
     <select v-model="level">
       <option v-for="value in [3,4,5,6,7,8,9,10]" :key="value" :value="value">
         {{ value }} colours
       </option>
     </select>
     <button @click="start" class="start-button">Start</button>
-    <button :disabled="!moves.length" @click="undo">Undo</button>
+    <button :disabled="!moves.length || win" @click="undo">Undo</button>
     <button :disabled="cannotAddContainer()" @click="addContainer">Add container</button>
     <div class="wrapper">
       <Container
@@ -18,7 +18,6 @@
         :isSelected="selected === index"
       />
     </div>
-    <h2 v-if="win">You win!</h2>
   </div>
 </template>
 
@@ -52,7 +51,7 @@ export default {
       const randomised = allColours.sort(() => Math.random() - 0.5);
       this.containers = [
         ...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)),
-        ...Array.from(Array(Math.floor(this.level / 5)+1)).fill([])
+        ...Array.from(Array(Math.floor(this.level / 5.5)+1)).fill([])
       ];
     },
     selectContainer(index) {
