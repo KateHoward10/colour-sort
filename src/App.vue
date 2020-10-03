@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div>Score: {{ score }}</div>
+    <div>Number of moves: {{ moves.length }}</div>
     <select v-model="level">
       <option v-for="value in [3,4,5,6]" :key="value" :value="value">
         {{ value }} colours
@@ -8,7 +8,7 @@
     </select>
     <button @click="start">Start</button>
     <button :disabled="!moves.length" @click="undo">Undo</button>
-    <button :disabled="cannotAddContainer()" @click="addContainer">Add container (-10)</button>
+    <button :disabled="cannotAddContainer()" @click="addContainer">Add container</button>
     <div class="wrapper">
       <Container
         v-for="(contents, index) in containers"
@@ -34,7 +34,6 @@ export default {
       containers: [[],[],[],[]],
       selected: null,
       win: false,
-      score: +localStorage.getItem("score") || 0,
       hasAddedContainer: false,
       moves: []
     }
@@ -67,16 +66,11 @@ export default {
           this.moves.push({ from: this.selected, to: index });
         }
         this.selected = null;
-        if (this.hasWon()) {
-          this.win = true;
-          this.score += 50;
-          localStorage.setItem("score", this.score);
-        }
+        if (this.hasWon()) this.win = true;
       }
     },
     addContainer() {
       this.containers.push([]);
-      this.score -= 10;
       this.hasAddedContainer = true;
     },
     undo() {
@@ -84,7 +78,7 @@ export default {
       const ballToMove = this.containers[to].shift();
       this.containers[from] = [ballToMove, ...this.containers[from]];
       this.selected = null;
-      this.moves.pop();
+      this.moves.push({ from: to, to: from });
     },
     canMoveBall(index) {
       // If it's not the same container that the ball came from...
@@ -103,7 +97,7 @@ export default {
       });
     },
     cannotAddContainer() {
-      return this.hasAddedContainer || this.win || !this.containers.toString().replace(/,/g,'') || this.score < 10;
+      return this.hasAddedContainer || this.win || !this.containers.toString().replace(/,/g,'');
     }
   },
   components: {
