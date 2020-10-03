@@ -2,7 +2,7 @@
   <div
     class="ball"
     :style="{
-      background: colour,
+      background: `radial-gradient(circle at 10px 10px, ${colour}, #222)`,
       transform: `translateY(-${yOffset}px)`
     }"
   >
@@ -21,10 +21,9 @@ export default {
 
 <style scoped>
   .ball {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
-    border: 1px solid grey;
-    margin: 1px;
+    border: 1px solid #222;
   }
 </style>

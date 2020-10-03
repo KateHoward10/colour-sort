@@ -2,7 +2,7 @@
   <div id="app">
     <div>Number of moves: {{ totalMoves }}</div>
     <select v-model="level">
-      <option v-for="value in [3,4,5,6]" :key="value" :value="value">
+      <option v-for="value in [3,4,5,6,7,8,9,10]" :key="value" :value="value">
         {{ value }} colours
       </option>
     </select>
@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       level: 3,
-      colours: ['red', 'blue', 'green', 'yellow', 'violet', 'deepskyblue'],
+      colours: ['#FF0000', '#3BB9FF', '#FFFF00', '#00FF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080'],
       containers: [[],[],[],[]],
       selected: null,
       win: false,
@@ -129,7 +129,7 @@ body {
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
-  max-width: 500px;
+  max-width: 700px;
   margin: 0 auto;
 }
 button, select {
