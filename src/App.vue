@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div>Number of moves: {{ moves.length }}</div>
+    <div>Number of moves: {{ totalMoves }}</div>
     <select v-model="level">
       <option v-for="value in [3,4,5,6]" :key="value" :value="value">
         {{ value }} colours
@@ -35,7 +35,8 @@ export default {
       selected: null,
       win: false,
       hasAddedContainer: false,
-      moves: []
+      moves: [],
+      totalMoves: 0
     }
   },
   methods: {
@@ -44,6 +45,7 @@ export default {
       this.selected = null;
       this.hasAddedContainer = false;
       this.moves = [];
+      this.totalMoves = 0;
       const levelColours = this.colours.slice(0, this.level);
       let allColours = levelColours;
       for (let i = 0; i < 3; i++) allColours = [...allColours, ...levelColours];
@@ -64,6 +66,7 @@ export default {
           // ...and add it to the selected one
           this.containers[index] = [ballToMove, ...this.containers[index]];
           this.moves.push({ from: this.selected, to: index });
+          this.totalMoves++;
         }
         this.selected = null;
         if (this.hasWon()) this.win = true;
@@ -78,7 +81,8 @@ export default {
       const ballToMove = this.containers[to].shift();
       this.containers[from] = [ballToMove, ...this.containers[from]];
       this.selected = null;
-      this.moves.push({ from: to, to: from });
+      this.moves.pop();
+      this.totalMoves++;
     },
     canMoveBall(index) {
       // If it's not the same container that the ball came from...
