@@ -9,7 +9,7 @@ body {
   background-color: #111;
   min-height: 100vh;
   text-align: center;
-  padding: 60px;
+  padding: 20px;
   color: #fff;
 }
 
@@ -24,11 +24,11 @@ body {
 
 button, select {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
+  font-size: 12px;
   color: #fff;
   background-color: #111;
   border: 2px solid #fff;
-  margin: 20px;
+  margin: 10px;
 }
 
 button {
@@ -42,18 +42,18 @@ button:hover {
 }
 
 .start-button {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: bold;
 }
 
 .container {
-  width: 40px;
-  height: 160px;
+  width: 20px;
+  height: 80px;
   border: 2px solid #fff;
   border-top: 0;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
-  margin: 30px 20px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin: 20px 8px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -61,8 +61,32 @@ button:hover {
 }
 
 .ball {
-  width: 38px;
-  height: 38px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 1px solid #222;
+}
+
+@media screen and (min-width: 500px) {
+  #app {
+    padding: 60px;
+  }
+
+  button, select, .start-button {
+    font-size: 16px;
+    margin: 20px;
+  }
+  
+  .container {
+    width: 40px;
+    height: 160px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    margin: 30px 20px;
+  }
+
+  .ball {
+    width: 38px;
+    height: 38px;
+  }  
 }

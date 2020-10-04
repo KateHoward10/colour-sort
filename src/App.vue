@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h2>{{ win ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</h2>
+    <p>{{ win ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</p>
     <select v-model="level">
       <option v-for="value in [3,4,5,6,7,8,9,10]" :key="value" :value="value">
         {{ value }} colours
