@@ -1,20 +1,25 @@
-<template>
-  <div
-    class="ball"
-    :style="{
-      background: `radial-gradient(circle at 10px 10px, ${colour}, #222)`,
-      transform: `translateY(-${yOffset}px)`
-    }"
-  >
-  </div>
-</template>
-
 <script>
-export default {
-  name: 'Ball',
-  props: {
-    colour: String,
-    yOffset: Number
-  }
+import styled from "vue-styled-components";
+
+const props = {
+  colour: String,
+  yOffsetMultiplier: Number
 }
+
+const Ball = styled('div', props)`
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #222;
+  background: radial-gradient(circle at 5px 5px, ${props => props.colour}, #222);
+  transform: translateY(-${props => props.yOffsetMultiplier * 20}px);
+  @media screen and (min-width: 500px) {
+    width: 38px;
+    height: 38px;
+    background: radial-gradient(circle at 10px 10px, ${props => props.colour}, #222);
+    transform: translateY(-${props => props.yOffsetMultiplier * 40}px);
+  }  
+`;
+
+export default Ball
 </script>

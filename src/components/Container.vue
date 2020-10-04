@@ -4,7 +4,7 @@
       v-for="(colour, index) in contents"
       :key="index"
       :colour="colour"
-      :yOffset="isSelected && index === 0 ? (5 - contents.length) * 40 : 0"
+      :yOffsetMultiplier="isSelected && index === 0 ? (5 - contents.length) : 0"
     />
   </div>
 </template>
