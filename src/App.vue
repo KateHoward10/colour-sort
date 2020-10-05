@@ -74,14 +74,18 @@ export default {
         if (this.containers[index].length) this.selected = index;
       } else {
         if (this.canMoveBall(index)) {
+          const selected = this.selected;
           // Remove ball from its current container...
-          const ballToMove = this.containers[this.selected].shift();
+          const ballToMove = this.containers[selected].shift();
           // ...and add it to the selected one
           this.containers[index] = [ballToMove, ...this.containers[index]];
-          this.moves.push({ from: this.selected, to: index });
+          this.moves.push({ from: selected, to: index });
           this.totalMoves++;
+          this.selected = index;
         }
-        this.selected = null;
+        setTimeout(() => {
+          this.selected = null;
+        }, 100);
         if (this.hasWon()) this.win = true;
       }
     },

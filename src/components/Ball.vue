@@ -12,7 +12,8 @@ const Ball = styled('div', props)`
   border-radius: 50%;
   border: 1px solid #222;
   background: radial-gradient(circle at 5px 5px, ${props => props.colour}, #222);
-  transform: translateY(-${props => props.yOffsetMultiplier * 20}px);
+  transition: all 0.1s bounce;
+  transform: translateY(-${props => props.yOffsetMultiplier * 24}px);
   @media screen and (min-width: 500px) {
     width: 38px;
     height: 38px;
