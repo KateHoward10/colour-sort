@@ -6,7 +6,8 @@
         {{ value }} colours
       </option>
     </select>
-    <button @click="start" class="start-button">Start</button>
+    <button v-if="notPlaying" @click="start" class="start-button">Start</button>
+    <button v-else @click="restart" class="start-button">Restart</button>
     <button :disabled="!moves.length || win" @click="undo">Undo</button>
     <button :disabled="cannotAddContainer()" @click="addContainer">Add container</button>
     <div class="wrapper">
@@ -31,11 +32,17 @@ export default {
       level: 3,
       colours: ['#FF0000', '#3BB9FF', '#FFFF00', '#00FF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080'],
       containers: [[],[],[],[]],
+      initial: '',
       selected: null,
       win: false,
       hasAddedContainer: false,
       moves: [],
       totalMoves: 0
+    }
+  },
+  computed: {
+    notPlaying: function() {
+      return this.win || !this.containers.toString().replace(/,/g,'');
     }
   },
   methods: {
@@ -53,6 +60,13 @@ export default {
         ...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)),
         ...Array.from(Array(Math.floor(this.level / 5.5)+1)).fill([])
       ];
+      this.initial = JSON.stringify(this.containers);
+    },
+    restart() {
+      this.containers = JSON.parse(this.initial);
+      this.selected = null;
+      this.moves = [];
+      this.totalMoves = 0;
     },
     selectContainer(index) {
       if (this.selected === null) {
@@ -100,7 +114,7 @@ export default {
       });
     },
     cannotAddContainer() {
-      return this.hasAddedContainer || this.win || !this.containers.toString().replace(/,/g,'');
+      return this.hasAddedContainer || this.notPlaying;
     }
   },
   components: {
