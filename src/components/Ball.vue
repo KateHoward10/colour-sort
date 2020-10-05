@@ -7,8 +7,8 @@ const props = {
 }
 
 const Ball = styled('div', props)`
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 1px solid #222;
   background: radial-gradient(circle at 5px 5px, ${props => props.colour}, #222);
