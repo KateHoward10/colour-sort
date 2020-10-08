@@ -31,8 +31,7 @@ export default {
     return {
       level: 3,
       colours: ['#FF0000', '#3BB9FF', '#FFFF00', '#00FF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080'],
-      containers: [[],[],[],[]],
-      initial: '',
+      containers: JSON.parse(localStorage.getItem('initial')) || [[],[],[],[]],
       selected: null,
       win: false,
       hasAddedContainer: false,
@@ -60,10 +59,10 @@ export default {
         ...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)),
         ...Array.from(Array(Math.floor(this.level / 5.5)+1)).fill([])
       ];
-      this.initial = JSON.stringify(this.containers);
+      localStorage.setItem('initial', JSON.stringify(this.containers));
     },
     restart() {
-      this.containers = JSON.parse(this.initial);
+      this.containers = JSON.parse(localStorage.getItem('initial'));
       this.selected = null;
       this.moves = [];
       this.totalMoves = 0;
