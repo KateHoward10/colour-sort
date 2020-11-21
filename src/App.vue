@@ -39,6 +39,14 @@ export default {
       totalMoves: 0
     }
   },
+  mounted() {
+    if (localStorage.level) this.level = localStorage.level;
+  },
+  watch: {
+    level(newLevel) {
+      localStorage.level = newLevel;
+    }
+  },
   computed: {
     notPlaying: function() {
       return this.win || !this.containers.toString().replace(/,/g,'');
