@@ -10,6 +10,7 @@
     <button v-else @click="restart" class="start-button">Restart</button>
     <button :disabled="!moves.length || win" @click="undo">Undo</button>
     <button :disabled="cannotAddContainer()" @click="addContainer">Add container</button>
+    <Instructions />
     <div class="wrapper">
       <Container
         v-for="(contents, index) in containers"
@@ -23,6 +24,7 @@
 </template>
 
 <script>
+import Instructions from './components/Instructions.vue'
 import Container from './components/Container.vue'
 
 export default {
@@ -129,6 +131,7 @@ export default {
     }
   },
   components: {
+    Instructions,
     Container
   }
 }
