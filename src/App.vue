@@ -67,7 +67,7 @@ export default {
       const randomised = allColours.sort(() => Math.random() - 0.5);
       this.containers = [
         ...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)),
-        ...Array.from(Array(Math.floor(this.level / 5.5)+1)).fill([])
+        ...Array.from(Array(Math.floor(this.level / 5)+1)).fill([])
       ];
       localStorage.setItem('initial', JSON.stringify(this.containers));
     },
@@ -92,9 +92,7 @@ export default {
           this.totalMoves++;
           this.selected = index;
         }
-        setTimeout(() => {
-          this.selected = null;
-        }, 100);
+        setTimeout(() => this.selected = null, 100);
         if (this.hasWon()) this.win = true;
       }
     },
