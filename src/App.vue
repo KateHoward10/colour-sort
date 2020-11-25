@@ -31,9 +31,9 @@ export default {
   name: 'App',
   data() {
     return {
-      level: 3,
+      level: 4,
       colours: ['#FF0000', '#3BB9FF', '#FFFF00', '#00FF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080'],
-      containers: JSON.parse(localStorage.getItem('initial')) || [[],[],[],[]],
+      containers: JSON.parse(localStorage.getItem('initial')) || [[],[],[],[], []],
       selected: null,
       win: false,
       hasAddedContainer: false,
@@ -67,7 +67,7 @@ export default {
       const randomised = allColours.sort(() => Math.random() - 0.5);
       this.containers = [
         ...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)),
-        ...Array.from(Array(Math.floor(this.level / 5)+1)).fill([])
+        ...Array.from(Array(Math.floor(this.level / 5.5)+1)).fill([])
       ];
       localStorage.setItem('initial', JSON.stringify(this.containers));
     },
