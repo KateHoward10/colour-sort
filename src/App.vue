@@ -2,11 +2,11 @@
   <div id="app">
     <p>{{ win ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</p>
     <select v-model="level">
-      <option v-for="value in [3,4,5,6,7,8,9,10]" :key="value" :value="value">
+      <option v-for="value in [4, 5, 6, 7, 8, 9, 10]" :key="value" :value="value">
         {{ value }} colours
       </option>
     </select>
-    <button v-if="notPlaying" @click="start" class="start-button">Start</button>
+    <button v-if="notPlaying" @click="start" class="start-button">New game</button>
     <button v-else @click="restart" class="start-button">Restart</button>
     <button :disabled="!moves.length || win" @click="undo">Undo</button>
     <button :disabled="cannotAddContainer()" @click="addContainer">Add container</button>
@@ -66,8 +66,8 @@ export default {
       for (let i = 0; i < 3; i++) allColours = [...allColours, ...levelColours];
       const randomised = allColours.sort(() => Math.random() - 0.5);
       this.containers = [
-        ...levelColours.map((c, index) => randomised.slice(index*4, (index*4)+4)),
-        ...Array.from(Array(Math.floor(this.level / 5.5)+1)).fill([])
+        ...levelColours.map((c, index) => randomised.slice(index * 4, (index * 4) + 4)),
+        ...Array.from(Array(Math.floor(this.level / 5.5) + 1)).fill([])
       ];
       localStorage.setItem('initial', JSON.stringify(this.containers));
     },
