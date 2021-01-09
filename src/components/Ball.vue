@@ -1,5 +1,5 @@
 <script>
-import styled from "vue-styled-components";
+import styled from "vue3-styled-components";
 
 const props = {
   colour: String,
