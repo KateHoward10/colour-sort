@@ -9,7 +9,7 @@
     <button v-if="notPlaying" @click="start" class="start-button">New game</button>
     <button v-else @click="restart" class="start-button">Restart</button>
     <button :disabled="!moves.length || win" @click="undo">Undo</button>
-    <button :disabled="cannotAddContainer()" @click="addContainer">Add container</button>
+    <button :disabled="cannotAddContainer" @click="addContainer">Add container</button>
     <Instructions />
     <div class="wrapper">
       <Container
@@ -24,108 +24,132 @@
 </template>
 
 <script>
+import { ref, computed, onMounted, watch } from 'vue';
 import Instructions from './components/Instructions.vue'
 import Container from './components/Container.vue'
 
 export default {
   name: 'App',
-  data() {
-    return {
-      level: 4,
-      colours: ['#FF0000', '#3BB9FF', '#FFFF00', '#00FF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080'],
-      containers: JSON.parse(localStorage.getItem('initial')) || [[],[],[],[], []],
-      selected: null,
-      win: false,
-      hasAddedContainer: false,
-      moves: [],
-      totalMoves: 0
-    }
-  },
-  mounted() {
-    if (localStorage.level) this.level = localStorage.level;
-  },
-  watch: {
-    level(newLevel) {
-      localStorage.level = newLevel;
-    }
-  },
-  computed: {
-    notPlaying: function() {
-      return this.win || !this.containers.toString().replace(/,/g,'');
-    }
-  },
-  methods: {
-    start() {
-      this.win = false;
-      this.selected = null;
-      this.hasAddedContainer = false;
-      this.moves = [];
-      this.totalMoves = 0;
-      const levelColours = this.colours.slice(0, this.level);
+  setup() {
+    const level = ref(4);
+    const colours = ref(['#FF0000', '#3BB9FF', '#FFFF00', '#00FF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080']);
+    const containers = ref(JSON.parse(localStorage.getItem('initial')) || [[],[],[],[], []]);
+    const selected = ref(null);
+    const win = ref(false);
+    const hasAddedContainer = ref(false);
+    const moves = ref([]);
+    const totalMoves = ref(0);
+
+    const notPlaying = computed(function() {
+      return win.value || !containers.value.toString().replace(/,/g,'');
+    })
+
+    const hasWon = computed(function() {
+      return containers.value.every(contents => {
+        return !contents.length || (contents.length === 4 && contents.every(colour => colour === contents[0]));
+      });
+    })
+
+    const cannotAddContainer = computed(function() {
+      return hasAddedContainer.value || notPlaying.value;
+    })
+
+    function start() {
+      win.value = false;
+      selected.value = null;
+      hasAddedContainer.value = false;
+      moves.value = [];
+      totalMoves.value = 0;
+      const levelColours = colours.value.slice(0, level.value);
       let allColours = levelColours;
       for (let i = 0; i < 3; i++) allColours = [...allColours, ...levelColours];
       const randomised = allColours.sort(() => Math.random() - 0.5);
-      this.containers = [
+      containers.value = [
         ...levelColours.map((c, index) => randomised.slice(index * 4, (index * 4) + 4)),
-        ...Array.from(Array(Math.floor(this.level / 5.5) + 1)).fill([])
+        ...Array.from(Array(Math.floor(level.value / 5.5) + 1)).fill([])
       ];
-      localStorage.setItem('initial', JSON.stringify(this.containers));
-    },
-    restart() {
-      this.containers = JSON.parse(localStorage.getItem('initial'));
-      this.selected = null;
-      this.moves = [];
-      this.totalMoves = 0;
-    },
-    selectContainer(index) {
-      if (this.selected === null) {
+      localStorage.setItem('initial', JSON.stringify(containers.value));
+    }
+
+    function restart() {
+      containers.value = JSON.parse(localStorage.getItem('initial'));
+      selected.value = null;
+      moves.value = [];
+      totalMoves.value = 0;
+    }
+
+    function selectContainer(index) {
+      if (selected.value === null) {
         // Pick up ball
-        if (this.containers[index].length) this.selected = index;
+        if (containers.value[index].length) selected.value = index;
       } else {
-        if (this.canMoveBall(index)) {
-          const selected = this.selected;
+        if (canMoveBall(index)) {
+          const current = selected.value;
           // Remove ball from its current container...
-          const ballToMove = this.containers[selected].shift();
+          const ballToMove = containers.value[current].shift();
           // ...and add it to the selected one
-          this.containers[index] = [ballToMove, ...this.containers[index]];
-          this.moves.push({ from: selected, to: index });
-          this.totalMoves++;
-          this.selected = index;
+          containers.value[index] = [ballToMove, ...containers.value[index]];
+          moves.value.push({ from: current, to: index });
+          totalMoves.value++;
+          selected.value = index;
         }
-        setTimeout(() => this.selected = null, 100);
-        if (this.hasWon()) this.win = true;
+        setTimeout(() => selected.value = null, 100);
+        if (hasWon.value) win.value = true;
       }
-    },
-    addContainer() {
-      this.containers.push([]);
-      this.hasAddedContainer = true;
-    },
-    undo() {
-      const { from, to } = this.moves[this.moves.length - 1];
-      const ballToMove = this.containers[to].shift();
-      this.containers[from] = [ballToMove, ...this.containers[from]];
-      this.selected = null;
-      this.moves.pop();
-      this.totalMoves++;
-    },
-    canMoveBall(index) {
+    }
+
+    function addContainer() {
+      containers.value.push([]);
+      hasAddedContainer.value = true;
+    }
+
+    function undo() {
+      const { from, to } = moves.value[moves.value.length - 1];
+      const ballToMove = containers.value[to].shift();
+      containers.value[from] = [ballToMove, ...containers.value[from]];
+      selected.value = null;
+      moves.value.pop();
+      totalMoves.value++;
+    }
+
+    function canMoveBall(index) {
       // If it's not the same container that the ball came from...
-      return index !== this.selected &&
+      return index !== selected.value &&
         // ...and it's not full...
-        this.containers[index].length < 4 && (
+        containers.value[index].length < 4 && (
           // ...and it's either completely empty...
-          !this.containers[index].length ||
+          !containers.value[index].length ||
           // ...or the top ball colour matches the selected ball
-          this.containers[index][0] === this.containers[this.selected][0]
+          containers.value[index][0] === containers.value[selected.value][0]
         );
-    },
-    hasWon() {
-      return this.containers.every(contents => {
-        return !contents.length || (contents.length === 4 && contents.every(colour => colour === contents[0]));
-      });
-    },
-    cannotAddContainer() {
-      return this.hasAddedContainer || this.notPlaying;
+    }
+
+    onMounted(() => {
+      if (localStorage.getItem('level')) level.value = +localStorage.getItem('level');
+    })
+
+    watch(level, (level, prevLevel) => {
+      if (level !== prevLevel) localStorage.setItem('level', level);
+    })
+
+    return {
+      level,
+      colours,
+      containers,
+      selected,
+      win,
+      hasAddedContainer,
+      moves,
+      totalMoves,
+      notPlaying,
+      hasWon,
+      cannotAddContainer,
+      start,
+      restart,
+      selectContainer,
+      addContainer,
+      undo,
+      canMoveBall
     }
   },
   components: {
