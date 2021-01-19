@@ -11,10 +11,13 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+
 export default {
   name: 'Instructions',
-  data() {
-    return { open: false };
+  setup() {
+    const open = ref(false);
+    return { open };
   }
 }
 </script>

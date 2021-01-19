@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <theme-provider>
     <p>{{ win ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</p>
     <select v-model="level">
       <option v-for="value in [4, 5, 6, 7, 8, 9, 10]" :key="value" :value="value">
@@ -20,11 +20,12 @@
         :isSelected="selected === index"
       />
     </div>
-  </div>
+  </theme-provider>>
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue'
+import { ThemeProvider } from 'vue3-styled-components'
 import Instructions from './components/Instructions.vue'
 import Container from './components/Container.vue'
 
@@ -154,7 +155,8 @@ export default {
   },
   components: {
     Instructions,
-    Container
+    Container,
+    ThemeProvider
   }
 }
 </script>
