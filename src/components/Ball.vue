@@ -1,5 +1,5 @@
 <script>
-import styled from "vue3-styled-components";
+import styled from "vue3-styled-components"
 
 const props = {
   colour: String,
@@ -20,7 +20,7 @@ const Ball = styled('div', props)`
     background: radial-gradient(circle at 10px 10px, ${props => props.colour}, #222);
     transform: translateY(-${props => props.yOffsetMultiplier * 40}px);
   }  
-`;
+`
 
 export default Ball
 </script>

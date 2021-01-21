@@ -46,20 +46,6 @@ button:hover {
   font-weight: bold;
 }
 
-.container {
-  width: 24px;
-  height: 96px;
-  border: 2px solid #fff;
-  border-top: 0;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  margin: 20px 6px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-}
-
 @media screen and (min-width: 500px) {
   #app {
     padding: 60px;
@@ -68,13 +54,5 @@ button:hover {
   button, select, .start-button {
     font-size: 16px;
     margin: 20px;
-  }
-  
-  .container {
-    width: 40px;
-    height: 160px;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    margin: 30px 20px;
   }
 }
