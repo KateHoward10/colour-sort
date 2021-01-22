@@ -20,7 +20,7 @@
         :isSelected="selected === index"
       />
     </div>
-  </theme-provider>>
+  </theme-provider>
 </template>
 
 <script>

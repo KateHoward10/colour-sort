@@ -1,5 +1,5 @@
 <template>
-  <wrapper @click="onClick">
+  <wrapper :isFilled="isSelected && contents.length === 4 && contents.every(colour => colour === contents[0])" @click="onClick">
     <Ball
       v-for="(colour, index) in contents"
       :key="index"
@@ -13,7 +13,11 @@
 import Ball from './Ball.vue'
 import styled from "vue3-styled-components"
 
-const Wrapper = styled('div')`
+const containerProps = {
+  isFilled: Boolean
+}
+
+const Wrapper = styled('div', containerProps)`
   width: 24px;
   height: 96px;
   border: 2px solid #fff;
@@ -25,6 +29,8 @@ const Wrapper = styled('div')`
   flex-direction: column;
   justify-content: flex-end;
   cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  transform: scale(${props => props.isFilled ? 1.05 : 1});
   @media screen and (min-width: 500px) {
     width: 40px;
     height: 160px;
