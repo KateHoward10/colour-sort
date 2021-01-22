@@ -28,6 +28,8 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { ThemeProvider } from 'vue3-styled-components'
 import Instructions from './components/Instructions.vue'
 import Container from './components/Container.vue'
+import container_filled from './assets/container_filled.wav'
+import solved from './assets/solved.wav'
 
 export default {
   name: 'App',
@@ -94,9 +96,20 @@ export default {
           totalMoves.value++;
           selected.value = index;
         }
+        const contents = containers.value[index];
         setTimeout(() => selected.value = null, 100);
-        if (hasWon.value) win.value = true;
+        if (hasWon.value) {
+          win.value = true;
+          playSound(solved);
+        } else if (contents.length === 4 && contents.every(colour => colour === contents[0])) {
+          playSound(container_filled);
+        }
       }
+    }
+
+    function playSound(file) {
+      const sound = new Audio(file);
+      sound.play();
     }
 
     function addContainer() {
@@ -148,6 +161,7 @@ export default {
       start,
       restart,
       selectContainer,
+      playSound,
       addContainer,
       undo,
       canMoveBall
