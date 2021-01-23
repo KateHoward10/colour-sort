@@ -1,16 +1,18 @@
 <template>
   <theme-provider>
     <p>{{ win ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</p>
-    <select v-model="level" :disabled="!notPlaying">
-      <option v-for="value in [4, 5, 6, 7, 8, 9, 10]" :key="value" :value="value">
-        {{ value }} colours
-      </option>
-    </select>
-    <button v-if="notPlaying" @click="start" class="start-button">New game</button>
-    <button v-else @click="restart" class="start-button">Restart</button>
-    <button :disabled="!moves.length || win" @click="undo">Undo</button>
-    <button :disabled="cannotAddContainer" @click="addContainer">Add container</button>
-    <Instructions />
+    <div class="wrapper">
+      <select v-model="level" :disabled="!notPlaying">
+        <option v-for="value in [4, 5, 6, 7, 8, 9, 10]" :key="value" :value="value">
+          {{ value }} colours
+        </option>
+      </select>
+      <Button v-if="notPlaying" @click="start" large :colour="colours[0]">New game</Button>
+      <Button v-else @click="restart" large :colour="colours[0]">Restart</Button>
+      <Button :disabled="!moves.length || win" @click="undo" :colour="colours[1]">Undo</Button>
+      <Button :disabled="cannotAddContainer" @click="addContainer" :colour="colours[2]">Add container</Button>
+      <Instructions :buttonColour="colours[3]" />
+    </div>
     <div class="wrapper">
       <Container
         v-for="(contents, index) in containers"
@@ -28,6 +30,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { ThemeProvider } from 'vue3-styled-components'
 import Instructions from './components/Instructions.vue'
 import Container from './components/Container.vue'
+import Button from './components/Button.vue'
 import container_filled from './assets/container_filled.wav'
 import solved from './assets/solved.wav'
 const containerSound = new Audio(container_filled)
@@ -37,13 +40,13 @@ export default {
   name: 'App',
   setup() {
     const level = ref(4);
-    const colours = ref(['#FF0000', '#3BB9FF', '#FFFF00', '#00FF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080']);
     const containers = ref(JSON.parse(localStorage.getItem('initial')) || []);
     const selected = ref(null);
     const win = ref(false);
     const hasAddedContainer = ref(false);
     const moves = ref([]);
     const totalMoves = ref(0);
+    const colours = ['#00FF00', '#FF0000', '#3BB9FF', '#FFFF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080'];
 
     const notPlaying = computed(function() {
       return win.value || !containers.value.toString().replace(/,/g,'');
@@ -65,7 +68,7 @@ export default {
       hasAddedContainer.value = false;
       moves.value = [];
       totalMoves.value = 0;
-      const levelColours = colours.value.slice(0, level.value);
+      const levelColours = colours.slice(0, level.value);
       let allColours = levelColours;
       for (let i = 0; i < 3; i++) allColours = [...allColours, ...levelColours];
       const randomised = allColours.sort(() => Math.random() - 0.5);
@@ -167,6 +170,7 @@ export default {
   components: {
     Instructions,
     Container,
+    Button,
     ThemeProvider
   }
 }
