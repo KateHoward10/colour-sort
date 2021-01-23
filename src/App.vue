@@ -30,6 +30,8 @@ import Instructions from './components/Instructions.vue'
 import Container from './components/Container.vue'
 import container_filled from './assets/container_filled.wav'
 import solved from './assets/solved.wav'
+const containerSound = new Audio(container_filled)
+const solvedSound = new Audio(solved)
 
 export default {
   name: 'App',
@@ -100,16 +102,11 @@ export default {
         setTimeout(() => selected.value = null, 100);
         if (hasWon.value) {
           win.value = true;
-          playSound(solved);
+          solvedSound.play();
         } else if (contents.length === 4 && contents.every(colour => colour === contents[0])) {
-          playSound(container_filled);
+          containerSound.play();
         }
       }
-    }
-
-    function playSound(file) {
-      const sound = new Audio(file);
-      sound.play();
     }
 
     function addContainer() {
@@ -161,7 +158,6 @@ export default {
       start,
       restart,
       selectContainer,
-      playSound,
       addContainer,
       undo,
       canMoveBall
