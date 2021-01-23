@@ -1,7 +1,7 @@
 <template>
   <theme-provider>
     <p>{{ win ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</p>
-    <select v-model="level">
+    <select v-model="level" :disabled="!notPlaying">
       <option v-for="value in [4, 5, 6, 7, 8, 9, 10]" :key="value" :value="value">
         {{ value }} colours
       </option>
@@ -38,7 +38,7 @@ export default {
   setup() {
     const level = ref(4);
     const colours = ref(['#FF0000', '#3BB9FF', '#FFFF00', '#00FF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080']);
-    const containers = ref(JSON.parse(localStorage.getItem('initial')) || [[],[],[],[], []]);
+    const containers = ref(JSON.parse(localStorage.getItem('initial')) || []);
     const selected = ref(null);
     const win = ref(false);
     const hasAddedContainer = ref(false);
@@ -137,6 +137,7 @@ export default {
 
     onMounted(() => {
       if (localStorage.getItem('level')) level.value = +localStorage.getItem('level');
+      start();
     })
 
     watch(level, (level, prevLevel) => {
