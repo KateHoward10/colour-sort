@@ -1,5 +1,6 @@
 <template>
   <theme-provider>
+    <Controls :soundOn="soundOn" :toggleSound="toggleSound" :buttonColour="colours[3]" />
     <p>{{ hasSolved ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</p>
     <div class="wrapper">
       <select v-model="level" :disabled="!notPlaying">
@@ -11,7 +12,6 @@
       <Button v-else @click="restart" large :colour="colours[0]">Restart</Button>
       <Button :disabled="!moves.length || hasSolved" @click="undo" :colour="colours[1]">Undo</Button>
       <Button :disabled="cannotAddContainer" @click="addContainer" :colour="colours[2]">Add container</Button>
-      <Instructions :buttonColour="colours[3]" />
     </div>
     <div class="wrapper">
       <Container
@@ -28,13 +28,11 @@
 <script>
 import { ref, computed, onMounted, watch } from 'vue'
 import { ThemeProvider } from 'vue3-styled-components'
-import Instructions from './components/Instructions.vue'
+import Controls from './components/Controls.vue'
 import Container from './components/Container.vue'
 import Button from './components/Button.vue'
 import container_filled from './assets/container_filled.wav'
 import solved from './assets/solved.wav'
-const containerSound = new Audio(container_filled)
-const solvedSound = new Audio(solved)
 
 export default {
   name: 'App',
@@ -45,6 +43,9 @@ export default {
     const hasAddedContainer = ref(false);
     const moves = ref([]);
     const totalMoves = ref(0);
+    const soundOn = ref(true);
+    const containerSound = new Audio(container_filled);
+    const solvedSound = new Audio(solved);
     const colours = ['#00FF00', '#FF0000', '#3BB9FF', '#FFFF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080'];
 
     const notPlaying = computed(function() {
@@ -101,22 +102,19 @@ export default {
           selected.value = index;
         }
         setTimeout(() => selected.value = null, 100);
-        if (hasSolved.value) {
-          solvedSound.play();
-        } else if (isFilled(containers.value[index])) {
-          if (containerSound.currentTime > 0 && !containerSound.ended) {
-            const newSound = new Audio(container_filled);
-            newSound.play();
-          } else {
-            containerSound.play();
+        if (soundOn.value) {
+          if (hasSolved.value) {
+            solvedSound.play();
+          } else if (isFilled(containers.value[index])) {
+            if (containerSound.currentTime > 0 && !containerSound.ended) {
+              const newSound = new Audio(container_filled);
+              newSound.play();
+            } else {
+              containerSound.play();
+            }
           }
         }
       }
-    }
-
-    function addContainer() {
-      containers.value.push([]);
-      hasAddedContainer.value = true;
     }
 
     function undo() {
@@ -126,6 +124,15 @@ export default {
       selected.value = null;
       moves.value.pop();
       totalMoves.value++;
+    }
+
+    function addContainer() {
+      containers.value.push([]);
+      hasAddedContainer.value = true;
+    }
+
+    function toggleSound() {
+      soundOn.value = !soundOn.value;
     }
 
     function canMoveBall(index) {
@@ -160,19 +167,20 @@ export default {
       selected,
       moves,
       totalMoves,
+      soundOn,
       notPlaying,
       hasSolved,
       cannotAddContainer,
       start,
       restart,
       selectContainer,
-      addContainer,
       undo,
-      canMoveBall
+      addContainer,
+      toggleSound
     }
   },
   components: {
-    Instructions,
+    Controls,
     Container,
     Button,
     ThemeProvider

@@ -15,14 +15,14 @@ const Button = styled('button', props)`
   border: 2px solid ${props => props.colour || '#fff'};
   margin: 8px;
   border-radius: 15px;
-  padding: 2px ${props => props.large ? 14 : 10}px;
+  padding: 2px 10px;
   cursor: pointer;
   &:hover {
     transform: scale(1.1);
   }
   @media screen and (min-width: 500px) {
     font-size: ${props => props.large ? 18 : 16}px;
-    margin: 16px;
+    margin: 14px;
   }  
 `
 
