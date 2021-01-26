@@ -52,7 +52,7 @@ export default {
       return win.value || !containers.value.toString().replace(/,/g,'');
     })
 
-    const hasWon = computed(function() {
+    const hasSolved = computed(function() {
       return containers.value.every(contents => {
         return !contents.length || (contents.length === 4 && contents.every(colour => colour === contents[0]));
       });
@@ -103,11 +103,16 @@ export default {
         }
         const contents = containers.value[index];
         setTimeout(() => selected.value = null, 100);
-        if (hasWon.value) {
+        if (hasSolved.value) {
           win.value = true;
           solvedSound.play();
         } else if (contents.length === 4 && contents.every(colour => colour === contents[0])) {
-          containerSound.play();
+          if (containerSound.currentTime > 0 && !containerSound.ended) {
+            const newSound = new Audio(container_filled);
+            newSound.play();
+          } else {
+            containerSound.play();
+          }
         }
       }
     }
@@ -157,7 +162,7 @@ export default {
       moves,
       totalMoves,
       notPlaying,
-      hasWon,
+      hasSolved,
       cannotAddContainer,
       start,
       restart,
