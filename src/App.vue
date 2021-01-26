@@ -1,6 +1,6 @@
 <template>
   <theme-provider>
-    <p>{{ win ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</p>
+    <p>{{ hasSolved ? `Solved in ${totalMoves} moves` : `Total moves: ${totalMoves}`}}</p>
     <div class="wrapper">
       <select v-model="level" :disabled="!notPlaying">
         <option v-for="value in [4, 5, 6, 7, 8, 9, 10]" :key="value" :value="value">
@@ -9,7 +9,7 @@
       </select>
       <Button v-if="notPlaying" @click="start" large :colour="colours[0]">New game</Button>
       <Button v-else @click="restart" large :colour="colours[0]">Restart</Button>
-      <Button :disabled="!moves.length || win" @click="undo" :colour="colours[1]">Undo</Button>
+      <Button :disabled="!moves.length || hasSolved" @click="undo" :colour="colours[1]">Undo</Button>
       <Button :disabled="cannotAddContainer" @click="addContainer" :colour="colours[2]">Add container</Button>
       <Instructions :buttonColour="colours[3]" />
     </div>
@@ -42,19 +42,18 @@ export default {
     const level = ref(4);
     const containers = ref(JSON.parse(localStorage.getItem('initial')) || []);
     const selected = ref(null);
-    const win = ref(false);
     const hasAddedContainer = ref(false);
     const moves = ref([]);
     const totalMoves = ref(0);
     const colours = ['#00FF00', '#FF0000', '#3BB9FF', '#FFFF00', '#6C2DC7', '#2B60DE', '#F87217', '#008000', '#F660AB', '#808080'];
 
     const notPlaying = computed(function() {
-      return win.value || !containers.value.toString().replace(/,/g,'');
+      return hasSolved.value || !containers.value.toString().replace(/,/g,'');
     })
 
     const hasSolved = computed(function() {
       return containers.value.every(contents => {
-        return !contents.length || (contents.length === 4 && contents.every(colour => colour === contents[0]));
+        return !contents.length || isFilled(contents);
       });
     })
 
@@ -63,7 +62,7 @@ export default {
     })
 
     function start() {
-      win.value = false;
+      containers.value = [];
       selected.value = null;
       hasAddedContainer.value = false;
       moves.value = [];
@@ -101,12 +100,10 @@ export default {
           totalMoves.value++;
           selected.value = index;
         }
-        const contents = containers.value[index];
         setTimeout(() => selected.value = null, 100);
         if (hasSolved.value) {
-          win.value = true;
           solvedSound.play();
-        } else if (contents.length === 4 && contents.every(colour => colour === contents[0])) {
+        } else if (isFilled(containers.value[index])) {
           if (containerSound.currentTime > 0 && !containerSound.ended) {
             const newSound = new Audio(container_filled);
             newSound.play();
@@ -143,6 +140,10 @@ export default {
         );
     }
 
+    function isFilled(container) {
+      return container.length === 4 && container.every(colour => colour === container[0]);
+    }
+
     onMounted(() => {
       if (localStorage.getItem('level')) level.value = +localStorage.getItem('level');
       start();
@@ -157,8 +158,6 @@ export default {
       colours,
       containers,
       selected,
-      win,
-      hasAddedContainer,
       moves,
       totalMoves,
       notPlaying,
